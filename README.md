@@ -1,4 +1,4 @@
-# recommend_me_manga
+# Shenlong
 
 Objective: Create a content based recommendation system for manga.
 
