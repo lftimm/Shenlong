@@ -11,26 +11,26 @@ class Logger:
     __instance = None
 
     @staticmethod
-    def get_instance() -> None:
+    def get_instance():
         if Logger.__instance == None:
             Logger()
         return Logger.__instance 
     
     def __init__(self) -> None:
-        if Logger.__instance != None:
-            Logger.__instance = Logger()
+        if Logger.__instance is not None:
+            raise Exception("Logger can only be instantiated once.")
         else:
             Logger.__instance = self
 
             self.base_log_dir = 'logs'
             self.file = self.__generate_log_file_name()
             self.path = os.path.join(self.base_log_dir,self.file)
-            self.path_exists = os.path.exists(self.path)
-            if not self.path_exists:
-                os.makedirs('logs')
+            
+            if not os.path.exists(self.base_log_dir):
+                os.makedirs(self.base_log_dir)
             
     def write(self,message: str) -> None:
-        flag: str = 'a' if self.path_exists else 'w'
+        flag: str = 'a' if os.path.exists(self.path) else 'w'
         
         with open(self.path, flag) as f:
             f.write(self.__relevant_time(DateDetails.hour_minute)+ ' ' + message + '\n')
