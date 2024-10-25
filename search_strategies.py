@@ -46,45 +46,55 @@ class MyAnimeListWebsite(AnimeWebsite):
       return result
    
    def get_anime_info(self, anime_page: Response) -> AnimeData:
+      self.__logger.write(f'Entering get_anime_info()')
       soup = BeautifulSoup(anime_page.content, 'html.parser')
+
       two_n_siblings = lambda x: x.next_sibling.next_sibling
       four_n_siblings = lambda x: two_n_siblings(two_n_siblings(x))
       eight_n_siblings = lambda x: four_n_siblings(four_n_siblings(x))
 
-      title = soup.find('h1', {'class':'title-name h1_bold_none'}).text
-      
+      title = soup.find('h1', {'class':'title-name h1_bold_none'}).text    
       image = soup.find('img',{'alt':f'{title}'})['data-src']
-      print(image)
       
       all_h2s = soup.findAll('h2')
-      
-      information_tag = all_h2s[1].next_sibling
+      information_tag = all_h2s[1].next_sibling if all_h2s != None else None
       
       type_tag = information_tag.next_sibling
-      ttype = type_tag.a['href']
-      
+      ttype = type_tag.a['href'] if type_tag != None else None
+      self.__logger.write(f'type: {ttype}')
+
       status_tag = four_n_siblings(type_tag)
       status = status_tag.span.next_sibling.text
+      self.__logger.write(f'status: {status}')
+
       
       studio_tag = four_n_siblings(eight_n_siblings(status_tag))
-      studio = studio_tag.find('a').text
-      
+      studio = studio_tag.find('a').text if studio_tag != None else None
+      self.__logger.write(f'studio: {studio}')
+
       genres_tag = four_n_siblings(studio_tag)
-      genres = [tag.text for tag in genres_tag.findAll('span',{'itemprop':'genre'})]
+      genres = [tag.text if tag != None else None for tag in genres_tag.findAll('span',{'itemprop':'genre'})]
+      self.__logger.write(f'genres: {genres}')
 
       demographics_tag = two_n_siblings(genres_tag)
-      demographics = demographics_tag.a.text
+      demographics = demographics_tag.a.text if demographics_tag != None else None
 
       statistics_tag = all_h2s[2]
       score_tag = two_n_siblings(statistics_tag)
-      score = score_tag.find('span',{'itemprop':'ratingValue'}).text
+      score = score_tag.find('span',{'itemprop':'ratingValue'}).text if score_tag != None else None
 
-      return AnimeData(_cover_image=image,
+      result = AnimeData(_cover_image=image,
                        _title=title,
                        _score=score,
                        _type=ttype,
-                       _status=studio,
+                       _status=status,
+                       _studio=studio,
+                       _demographics=demographics,
                        _genres=genres)
+      
+      self.__logger.write(result)
+
+      return result
 
 class MyAnimeListHtmlSearch(SearchStrategy):
    __search_page: Response

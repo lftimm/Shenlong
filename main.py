@@ -6,9 +6,9 @@ from search_strategies import MyAnimeListHtmlSearch, MyAnimeListWebsite
 def main():
     Logger.clear_file(Logger.get_log_path())
     search_method = MyAnimeListHtmlSearch(MyAnimeListWebsite)
-    filter = SearchFilter(_type='tv',_score=8)
+    filter = SearchFilter(_type='tv')
     search = msc.AnimeSearch(search_method)
-    search.search('One Piece', filter)
+    search.search('Bleach', filter)
     print(search)
     
 
