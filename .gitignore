@@ -1,2 +1,6 @@
 logs/*
 *.pyc
+shenlong_venv/*
+.vscode/*
+.pytest_cache/*
+__pycache__/*

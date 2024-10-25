@@ -1,4 +1,5 @@
-from utils.SearchFilter import SearchFilter
+from utils.AnimeUtils import SearchFilter
+
 from abc import ABC, abstractmethod
 from typing import Optional
 
@@ -21,5 +22,13 @@ class SearchStrategy(ABC):
       raise NotImplementedError('Not implemented')
    
    @abstractmethod
-   def request_data(self) -> None:
+   def request_data(self, url:str) -> None:
+      raise NotImplementedError('Not implemented')
+   
+   @abstractmethod
+   def get_result_page(self) -> None:
+      raise NotImplementedError('Not implemented')
+
+   @abstractmethod
+   def get_result(self) -> None:
       raise NotImplementedError('Not implemented')

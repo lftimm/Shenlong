@@ -18,9 +18,18 @@ class Controller:
          raise ValueError('No strategy set')
 
       self.__strategy.execute(title, filter)
+      self.__strategy.get_result_page()
+      
       AnimeSearch.__logger.write('->> End of Execution')
       return True
-            
+   
+   def get_reusult(self):
+      return self.__strategy.get_result()
+   
+   def __str__(self):
+      return str(self.__strategy.get_result())
+   
+   
 class AnimeSearch(Controller):
    def __init__(self, strategy: SearchStrategy):
       try:

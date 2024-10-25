@@ -1,12 +1,16 @@
 import anime_search as msc
-from utils.SearchFilter import SearchFilter
-from search_strategies import MyAnimeListHtmlSearch
+from utils.Logger import Logger
+from utils.AnimeUtils import SearchFilter
+from search_strategies import MyAnimeListHtmlSearch, MyAnimeListWebsite
 
 def main():
-    search_method = MyAnimeListHtmlSearch()
+    Logger.clear_file(Logger.get_log_path())
+    search_method = MyAnimeListHtmlSearch(MyAnimeListWebsite)
     filter = SearchFilter(_type='tv',_score=8)
-    scrapper = msc.AnimeSearch(search_method)
-    scrapper.search('Bleach', filter)
+    search = msc.AnimeSearch(search_method)
+    search.search('One Piece', filter)
+    print(search)
+    
 
 if __name__ == '__main__':
    main() 
