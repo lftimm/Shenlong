@@ -1,6 +1,8 @@
 from utils.Logger import Logger
-from project_abcs import SearchStrategy
+from utils.project_abcs import SearchStrategy
 from typing import Optional
+import requests
+from requests.models import Response
 
 class Controller:
    __logger = Logger().get_instance()
@@ -12,29 +14,35 @@ class Controller:
       AnimeSearch.__logger.write(f'Strategy set to -> {str(strategy)}')
       
    def search(self, title: str, filter: Optional[SearchStrategy] = None) -> bool:
-      Controller.__logger.write(f'Entered the search method with title: {title}')
-      if self.__strategy is None:
-         AnimeSearch.__logger.write('No strategy was set in AnimeSearch.Search(self)')
-         raise ValueError('No strategy set')
+      try:
+         Controller.__logger.write(f'Entered the search method with title: {title}')
+         if self.__strategy is None:
+            AnimeSearch.__logger.write('No strategy was set in AnimeSearch.Search(self)')
+            raise ValueError('No strategy set')
 
-      self.__strategy.execute(title, filter)
-      self.__strategy.get_result_page()
+         self.__strategy.execute(title, filter)
+         self.__strategy.get_result_page()
+         
+         AnimeSearch.__logger.write('->> End of Execution')
+         return True
+      except:
+         return False
       
-      AnimeSearch.__logger.write('->> End of Execution')
-      return True
-   
-   def get_reusult(self):
+   def get_result(self):
       return self.__strategy.get_result()
-   
-   def __str__(self):
-      return str(self.__strategy.get_result())
-   
    
 class AnimeSearch(Controller):
    def __init__(self, strategy: SearchStrategy):
       try:
          logger = Logger.get_instance()
          logger.write(f'-> Start of Execution')
+         self.strategy = strategy
          super().__init__(strategy)
       except Exception as err:
          logger.write(f'Excpetion Raised: {err}')
+   
+   def get_result(self):
+      return super().get_result()
+   
+   def __str__(self) -> str:
+      return super().get_result()

@@ -4,3 +4,5 @@ shenlong_venv/*
 .vscode/*
 .pytest_cache/*
 __pycache__/*
+html_for_testing/*
+tests/*

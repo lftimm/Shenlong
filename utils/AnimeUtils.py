@@ -18,3 +18,4 @@ class AnimeData:
     _status: Optional[str] = None
     _studio: Optional[str] = None
     _genres: Optional[List[str]] = None
+    _demographics: Optional[str] = None

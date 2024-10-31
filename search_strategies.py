@@ -1,8 +1,8 @@
-from project_abcs import SearchStrategy, AnimeWebsite
+from utils.project_abcs import SearchStrategy, AnimeWebsite
 from utils.Logger import Logger
 from utils.AnimeUtils import SearchFilter, AnimeData 
 
-from typing import Optional
+from typing import List, Optional
 from requests import Response
 from bs4 import BeautifulSoup
 
@@ -18,16 +18,23 @@ class MyAnimeListWebsite(AnimeWebsite):
       self.__logger = Logger.get_instance()
       self.score_filter = MyAnimeListWebsite.__score_filter
       self.type_filter = MyAnimeListWebsite.__type_filter
-
       
    def apply_filter(self, filter: SearchFilter):
       if filter._score != None:
          self.score_filter += str(filter._score)
          
-         if(filter._type.lower() == 'tv'):
-            self.type_filter += str(1)
-         else: self.type_filter += str(0)
-
+      if(filter._type.lower() == 'tv'):
+         self.type_filter += str(1)
+      elif filter._type.lower() == 'ova':
+         self.type_filter += str(2)
+      elif filter._type.lower() == 'movie':
+         self.type_filter += str(3)
+      elif filter._type.lower() == 'special':
+         self.type_filter += str(4)
+      elif filter._type.lower() == 'ona':
+         self.type_filter += str(5) 
+      else:
+         self.type_filter += str(0)
 
    def get_url(self, search: str, filter: Optional[SearchFilter] = None) -> str:
       if filter != None:
@@ -46,60 +53,34 @@ class MyAnimeListWebsite(AnimeWebsite):
       return result
    
    def get_anime_info(self, anime_page: Response) -> AnimeData:
-      self.__logger.write(f'Entering get_anime_info()')
-      soup = BeautifulSoup(anime_page.content, 'html.parser')
-
-      two_n_siblings = lambda x: x.next_sibling.next_sibling
-      four_n_siblings = lambda x: two_n_siblings(two_n_siblings(x))
-      eight_n_siblings = lambda x: four_n_siblings(four_n_siblings(x))
-
-      title = soup.find('h1', {'class':'title-name h1_bold_none'}).text    
-      image = soup.find('img',{'alt':f'{title}'})['data-src']
+      soup: BeautifulSoup = BeautifulSoup(anime_page.content, 'html.parser')
       
-      all_h2s = soup.findAll('h2')
-      information_tag = all_h2s[1].next_sibling if all_h2s != None else None
+      title = soup.find('h1', {'class':'title-name h1_bold_none'}).text
+      image = soup.find('img', {'alt':title})['data-src']
+      score = soup.find('span', {'itemprop':'ratingValue'}).text
+      ttype = soup.find('span', {'class':'information type'}).find('a').text
+      status = soup.find('span', string='Status:').next.next
+      studio = soup.find('span', {'class':'information studio author'}).find('a').text
+      genres : List[str] = [tag.text for tag in soup.findAll('span', {'itemprop':'genre'})[:-1]]
+      demographics = soup.findAll('span', {'itemprop':'genre'})[-1].text
+
+      result = AnimeData(_cover_image = image,
+                         _title = title,
+                         _score = score,
+                         _type = ttype,
+                         _status = status.strip(),
+                         _studio = studio,
+                         _genres = genres,
+                         _demographics = demographics)
       
-      type_tag = information_tag.next_sibling
-      ttype = type_tag.a['href'] if type_tag != None else None
-      self.__logger.write(f'type: {ttype}')
-
-      status_tag = four_n_siblings(type_tag)
-      status = status_tag.span.next_sibling.text
-      self.__logger.write(f'status: {status}')
-
-      
-      studio_tag = four_n_siblings(eight_n_siblings(status_tag))
-      studio = studio_tag.find('a').text if studio_tag != None else None
-      self.__logger.write(f'studio: {studio}')
-
-      genres_tag = four_n_siblings(studio_tag)
-      genres = [tag.text if tag != None else None for tag in genres_tag.findAll('span',{'itemprop':'genre'})]
-      self.__logger.write(f'genres: {genres}')
-
-      demographics_tag = two_n_siblings(genres_tag)
-      demographics = demographics_tag.a.text if demographics_tag != None else None
-
-      statistics_tag = all_h2s[2]
-      score_tag = two_n_siblings(statistics_tag)
-      score = score_tag.find('span',{'itemprop':'ratingValue'}).text if score_tag != None else None
-
-      result = AnimeData(_cover_image=image,
-                       _title=title,
-                       _score=score,
-                       _type=ttype,
-                       _status=status,
-                       _studio=studio,
-                       _demographics=demographics,
-                       _genres=genres)
-      
-      self.__logger.write(result)
+      self.__logger.write(f'Result: {result}')
 
       return result
 
 class MyAnimeListHtmlSearch(SearchStrategy):
    __search_page: Response
    __anime_page: Response
-   __result: AnimeData
+   result: AnimeData
      
    def __init__(self, mal_website: MyAnimeListWebsite):
       self.__website: MyAnimeListWebsite = mal_website()
@@ -119,21 +100,21 @@ class MyAnimeListHtmlSearch(SearchStrategy):
       if url is None:
          self.__logger.write(f'No page url was received')
          raise ValueError(f'request_data() needs a url not none')   
-         
-      self.__logger.write(f'Requesting data for {url}')
-      website: Response = requests.get(url)
-      if (not website.ok):
-         self.__logger.write(f'HTTP Request failure {website.status_code}')      
-      else: 
-         self.__logger.write(f'Request Sucessful') 
-      
+
+      try:
+         website: Response = requests.get(url)
+         website.raise_for_status()  # Raises an HTTPError for bad responses
+      except requests.exceptions.RequestException as e:
+         self.__logger.write(f'HTTP Request failure: {e}')
+
+      self.__logger.write(f'Request Successful') 
       return website
    
    def get_result_page(self) -> None:
       self.__logger.write(f'Started {str(__class__.__name__)} get_result_page()')
       page_url = self.__website.get_from_search_list(MyAnimeListHtmlSearch.__search_page)
       MyAnimeListHtmlSearch.__anime_page = self.request_data(page_url)
-      MyAnimeListHtmlSearch.__result = self.__website.get_anime_info(MyAnimeListHtmlSearch.__anime_page)
-
+      MyAnimeListHtmlSearch.result = self.__website.get_anime_info(MyAnimeListHtmlSearch.__anime_page) 
+   
    def get_result(self) -> AnimeData:
-      return MyAnimeListHtmlSearch.__result
+      return str(MyAnimeListHtmlSearch.result)
