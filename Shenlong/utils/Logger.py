@@ -22,6 +22,7 @@ def _relevant_time(date_details: DateDetails = DateDetails.day_month,
 
 class Logger:
     _instance = None
+    __path: str
 
     def __init__(self) -> None:
         if Logger._instance is not None:
@@ -31,7 +32,7 @@ class Logger:
 
             self.base_log_dir = 'logs'
             self.file = self.__generate_log_file_name()
-            self.path = os.path.join(self.base_log_dir,self.file)
+            Logger.__path = os.path.join(self.base_log_dir,self.file)
             
             if not os.path.exists(self.base_log_dir):
                 os.makedirs(self.base_log_dir)
@@ -42,12 +43,18 @@ class Logger:
             Logger()
         return Logger._instance 
          
-            
     def write(self, message: str) -> None:
-        flag: str = 'a' if os.path.exists(self.path) else 'w'
+        flag: str = 'a' if os.path.exists(Logger.__path) else 'w'
         
-        with open(self.path, flag) as f:
+        with open(Logger.__path, flag) as f:
             f.write(_relevant_time(DateDetails.hour_minute)+ ' ' + message + '\n')
+
+    @staticmethod
+    def get_log_path() -> str: return Logger.__path
+
+    @staticmethod
+    def clear_file(path: str) -> None:
+        open(path, 'w').close()
 
     def __generate_log_file_name(self) -> str:
         date_now = _relevant_time(DateDetails.day_month)

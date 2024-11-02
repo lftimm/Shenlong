@@ -1,0 +1,48 @@
+[17:15] -> Start of Execution
+[17:15] Entered the search method with title: naruto
+[17:15] Started <class 'search.search_strategies.MyAnimeListHtmlSearch'> execute
+[17:15] Entering get_url method, filter: True
+[17:15] Generated url: https://myanimelist.net/anime.php?cat=anime&q=naruto&score=8.0&type=1
+[17:15] Request Successful
+[17:15] Started MyAnimeListHtmlSearch get_result_page()
+[17:15] Entering get_from_search_list() with : https://myanimelist.net/anime.php?cat=anime&q=naruto&score=8.0&type=1
+[17:15] Returning with : https://myanimelist.net/anime/1735/Naruto__Shippuuden
+[17:15] Request Successful
+[17:15] Result: AnimeData(_cover_image='https://cdn.myanimelist.net/images/anime/1565/111305.jpg', _title='Naruto: Shippuuden', _score='8.27', _type='TV', _status='Finished Airing', _studio='Pierrot', _genres=['Action', 'Adventure', 'Fantasy', 'Martial Arts'], _demographics='Shounen')
+[17:15] ->> End of Execution
+[17:21] -> Start of Execution
+[17:21] Entered the search method with title: naruto
+[17:21] Started <class 'Shenlong.search.search_strategies.MyAnimeListHtmlSearch'> execute
+[17:21] Entering get_url method, filter: True
+[17:21] Generated url: https://myanimelist.net/anime.php?cat=anime&q=naruto&score=8.0&type=1
+[17:21] Request Successful
+[17:21] Started MyAnimeListHtmlSearch get_result_page()
+[17:21] Entering get_from_search_list() with : https://myanimelist.net/anime.php?cat=anime&q=naruto&score=8.0&type=1
+[17:21] Returning with : https://myanimelist.net/anime/1735/Naruto__Shippuuden
+[17:21] Request Successful
+[17:21] Result: AnimeData(_cover_image='https://cdn.myanimelist.net/images/anime/1565/111305.jpg', _title='Naruto: Shippuuden', _score='8.27', _type='TV', _status='Finished Airing', _studio='Pierrot', _genres=['Action', 'Adventure', 'Fantasy', 'Martial Arts'], _demographics='Shounen')
+[17:21] ->> End of Execution
+[17:21] -> Start of Execution
+[17:21] Entered the search method with title: naruto
+[17:21] Started <class 'Shenlong.search.search_strategies.MyAnimeListHtmlSearch'> execute
+[17:21] Entering get_url method, filter: True
+[17:21] Generated url: https://myanimelist.net/anime.php?cat=anime&q=naruto&score=8.0&type=1
+[17:21] Request Successful
+[17:21] Started MyAnimeListHtmlSearch get_result_page()
+[17:21] Entering get_from_search_list() with : https://myanimelist.net/anime.php?cat=anime&q=naruto&score=8.0&type=1
+[17:21] Returning with : https://myanimelist.net/anime/1735/Naruto__Shippuuden
+[17:21] Request Successful
+[17:21] Result: AnimeData(_cover_image='https://cdn.myanimelist.net/images/anime/1565/111305.jpg', _title='Naruto: Shippuuden', _score='8.27', _type='TV', _status='Finished Airing', _studio='Pierrot', _genres=['Action', 'Adventure', 'Fantasy', 'Martial Arts'], _demographics='Shounen')
+[17:21] ->> End of Execution
+[17:29] -> Start of Execution
+[17:29] Entered the search method with title: naruto
+[17:29] Started <class 'search.search_strategies.MyAnimeListHtmlSearch'> execute
+[17:29] Entering get_url method, filter: True
+[17:29] Generated url: https://myanimelist.net/anime.php?cat=anime&q=naruto&score=8.0&type=1
+[17:29] Request Successful
+[17:29] Started MyAnimeListHtmlSearch get_result_page()
+[17:29] Entering get_from_search_list() with : https://myanimelist.net/anime.php?cat=anime&q=naruto&score=8.0&type=1
+[17:29] Returning with : https://myanimelist.net/anime/1735/Naruto__Shippuuden
+[17:29] Request Successful
+[17:29] Result: AnimeData(_cover_image='https://cdn.myanimelist.net/images/anime/1565/111305.jpg', _title='Naruto: Shippuuden', _score='8.27', _type='TV', _status='Finished Airing', _studio='Pierrot', _genres=['Action', 'Adventure', 'Fantasy', 'Martial Arts'], _demographics='Shounen')
+[17:29] ->> End of Execution
