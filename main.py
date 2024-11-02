@@ -10,7 +10,6 @@ def main():
     search = msc.AnimeSearch(search_method)
     search.search('Dragon Ball', filter)
     result = search.get_result()
-    print(result)
 
 if __name__ == '__main__':
    main() 
