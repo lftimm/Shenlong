@@ -9,7 +9,8 @@ def main():
     filter = SearchFilter(_type='movie', _score=8)
     search = msc.AnimeSearch(search_method)
     search.search('Dragon Ball', filter)
-    
+    result = search.get_result()
+    print(result)
 
 if __name__ == '__main__':
    main() 
