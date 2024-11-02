@@ -1,8 +1,8 @@
-from utils.project_abcs import SearchStrategy, AnimeWebsite
-from utils.Logger import Logger
-from utils.AnimeUtils import SearchFilter, AnimeData 
+from ..utils.project_abcs import SearchStrategy, AnimeWebsite
+from ..utils.Logger import Logger
+from ..utils.AnimeUtils import SearchFilter, AnimeData 
 
-from typing import List, Optional
+from typing import List, Optional, Callable
 from requests import Response
 from bs4 import BeautifulSoup
 
@@ -10,7 +10,7 @@ import requests
 
 class MyAnimeListWebsite(AnimeWebsite):
    __base_url: str = 'https://myanimelist.net/anime.php?cat=anime'
-   __querry_add: str = 'q='   
+   __query_add: str = 'q='
    __score_filter: str = 'score='
    __type_filter: str = 'type='
    
@@ -20,27 +20,28 @@ class MyAnimeListWebsite(AnimeWebsite):
       self.type_filter = MyAnimeListWebsite.__type_filter
       
    def apply_filter(self, filter: SearchFilter):
-      if filter._score != None:
+      if filter._score is not None:
          self.score_filter += str(filter._score)
          
-      if(filter._type.lower() == 'tv'):
-         self.type_filter += str(1)
-      elif filter._type.lower() == 'ova':
-         self.type_filter += str(2)
-      elif filter._type.lower() == 'movie':
-         self.type_filter += str(3)
-      elif filter._type.lower() == 'special':
-         self.type_filter += str(4)
-      elif filter._type.lower() == 'ona':
-         self.type_filter += str(5) 
-      else:
-         self.type_filter += str(0)
+      if filter._type is not None:
+         if filter._type.lower() == 'tv':
+            self.type_filter += str(1)
+         elif filter._type.lower() == 'ova':
+            self.type_filter += str(2)
+         elif filter._type.lower() == 'movie':
+            self.type_filter += str(3)
+         elif filter._type.lower() == 'special':
+            self.type_filter += str(4)
+         elif filter._type.lower() == 'ona':
+            self.type_filter += str(5) 
+         else:
+            self.type_filter += str(0)
 
    def get_url(self, search: str, filter: Optional[SearchFilter] = None) -> str:
       if filter != None:
          self.apply_filter(filter)
       url: str = '&'.join([MyAnimeListWebsite.__base_url,
-                          (MyAnimeListWebsite.__querry_add+search),
+                          (MyAnimeListWebsite.__query_add+search),
                           self.score_filter,
                           self.type_filter])
       return url
@@ -66,7 +67,7 @@ class MyAnimeListWebsite(AnimeWebsite):
 
       result = AnimeData(_cover_image = image,
                          _title = title,
-                         _score = score,
+                         _score = float(score),
                          _type = ttype,
                          _status = status.strip(),
                          _studio = studio,
@@ -82,13 +83,13 @@ class MyAnimeListHtmlSearch(SearchStrategy):
    __anime_page: Response
    result: AnimeData
      
-   def __init__(self, mal_website: MyAnimeListWebsite):
+   def __init__(self, mal_website: Callable[[MyAnimeListWebsite], MyAnimeListWebsite]):
       self.__website: MyAnimeListWebsite = mal_website()
       self.__logger: Logger = Logger.get_instance()
    
    def execute(self, title: str, filter: Optional[SearchFilter] = None) -> None:
       self.__logger.write(f'Started {str(__class__)} execute')
-      self.__logger.write(f'Entering get_url method, filter: {filter!=None}')
+      self.__logger.write(f'Entering get_url method, filter: {filter is not None}')
       
       url: str = self.__website.get_url(title, filter)
       
@@ -117,4 +118,4 @@ class MyAnimeListHtmlSearch(SearchStrategy):
       MyAnimeListHtmlSearch.result = self.__website.get_anime_info(MyAnimeListHtmlSearch.__anime_page) 
    
    def get_result(self) -> AnimeData:
-      return str(MyAnimeListHtmlSearch.result)
+      return MyAnimeListHtmlSearch.result

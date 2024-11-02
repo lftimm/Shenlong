@@ -1,8 +1,8 @@
-from utils.Logger import Logger
-from utils.project_abcs import SearchStrategy
+from ..utils.AnimeUtils import SearchFilter
+from ..utils.Logger import Logger
+from .search_strategies import SearchStrategy
+
 from typing import Optional
-import requests
-from requests.models import Response
 
 class Controller:
    __logger = Logger().get_instance()
@@ -25,7 +25,8 @@ class Controller:
          
          AnimeSearch.__logger.write('->> End of Execution')
          return True
-      except:
+      except Exception as err:
+         self.__logger.write(f'Exception Raised: {err}')
          return False
       
    def get_result(self):

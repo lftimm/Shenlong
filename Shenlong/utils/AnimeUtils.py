@@ -5,7 +5,7 @@ from typing import Optional, List, Callable
 
 @dataclass
 class SearchFilter:
-    _score: Optional[int] = None
+    _score: Optional[float] = None
     _type: Optional[str] = None
     _status: Optional[str] = None
     
@@ -13,7 +13,7 @@ class SearchFilter:
 class AnimeData:
     _cover_image: Optional[str] = None
     _title: Optional[str] = None
-    _score: Optional[int] = None
+    _score: Optional[float] = None
     _type: Optional[str] = None
     _status: Optional[str] = None
     _studio: Optional[str] = None

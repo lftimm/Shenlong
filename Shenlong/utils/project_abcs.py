@@ -1,4 +1,4 @@
-from utils.AnimeUtils import SearchFilter
+from .AnimeUtils import SearchFilter
 
 from abc import ABC, abstractmethod
 from typing import Optional
